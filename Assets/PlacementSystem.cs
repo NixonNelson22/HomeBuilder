@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlacementSystem : MonoBehaviour
 {
     [SerializeField]
-    GameObject mouseIndicator, cellIndicator;
+    GameObject mouseIndicator;
     [SerializeField]
     private InputManager inputManager;
     [SerializeField]
@@ -17,9 +17,11 @@ public class PlacementSystem : MonoBehaviour
     private int SelectedObjectIndex = -1;
     [SerializeField]
     private GameObject gridVisualization;
-
+    [SerializeField]
+    private PreviewSystem preview;
     private void Start() {
         StopPlacement();
+
     }
     public void StartPlacement(int ID){
         StopPlacement();
@@ -29,7 +31,7 @@ public class PlacementSystem : MonoBehaviour
             return;
         }
         gridVisualization.SetActive(true);
-        cellIndicator.SetActive(true);
+        preview.StartShowingPlacementPreview(objectPool.objectsData[SelectedObjectIndex].Prefab,objectPool.objectsData[SelectedObjectIndex].Size);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
     }
@@ -48,7 +50,7 @@ public class PlacementSystem : MonoBehaviour
     public void StopPlacement(){
         SelectedObjectIndex = -1;
         gridVisualization.SetActive(false);
-        cellIndicator.SetActive(false);
+        preview.StopShowingPreview();
         inputManager.OnClicked -= PlaceStructure;
         inputManager.OnExit -= StopPlacement;
     }
@@ -59,6 +61,6 @@ public class PlacementSystem : MonoBehaviour
         Vector3 mousePosition = inputManager.getSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
         mouseIndicator.transform.position = mousePosition;       
-        cellIndicator.transform.position = grid.CellToWorld(gridPosition);    
+        preview.UpdatePosition(grid.CellToWorld(gridPosition),placementValidity);
     }
 }
