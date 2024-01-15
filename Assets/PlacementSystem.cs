@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 public class PlacementSystem : MonoBehaviour
@@ -17,11 +14,18 @@ public class PlacementSystem : MonoBehaviour
     private int SelectedObjectIndex = -1;
     [SerializeField]
     private GameObject gridVisualization;
+
+    private GridData floorData, furnitureData;
+    
+    private List<GameObject> placedGameObject= new();
     [SerializeField]
     private PreviewSystem preview;
+
+    private Vector3Int lastDetectedPosition = Vector3Int.zero;
     private void Start() {
         StopPlacement();
-
+        floorData = new();
+        furnitureData = new();
     }
     public void StartPlacement(int ID){
         StopPlacement();
@@ -43,8 +47,16 @@ public class PlacementSystem : MonoBehaviour
         }
         Vector3 mousePosition = inputManager.getSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
+        bool placementValidity = CheckPlacementValidity(gridPosition,SelectedObjectIndex);
+        if (placementValidity == false)
+        {
+            return;
+        }
         GameObject newObject = Instantiate(objectPool.objectsData[SelectedObjectIndex].Prefab);
         newObject.transform.position = grid.CellToWorld(gridPosition); 
+        placedGameObject.Add(newObject);
+        GridData selectedData = objectPool.objectsData[SelectedObjectIndex].ID == 0 ? floorData: furnitureData;
+        selectedData.AddObjectAt(gridPosition,objectPool.objectsData[SelectedObjectIndex].Size,objectPool.objectsData[SelectedObjectIndex].ID,placedGameObject.Count -1);
     }
 
     public void StopPlacement(){
@@ -53,6 +65,7 @@ public class PlacementSystem : MonoBehaviour
         preview.StopShowingPreview();
         inputManager.OnClicked -= PlaceStructure;
         inputManager.OnExit -= StopPlacement;
+        lastDetectedPosition = Vector3Int.zero;
     }
     private void Update() {
         if(SelectedObjectIndex < 0){
@@ -60,7 +73,19 @@ public class PlacementSystem : MonoBehaviour
         }
         Vector3 mousePosition = inputManager.getSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
-        mouseIndicator.transform.position = mousePosition;       
-        preview.UpdatePosition(grid.CellToWorld(gridPosition),placementValidity);
+        if (lastDetectedPosition != gridPosition)
+        {
+            bool placementValidity = CheckPlacementValidity(gridPosition,SelectedObjectIndex);
+            mouseIndicator.transform.position = mousePosition;       
+            preview.UpdatePosition(grid.CellToWorld(gridPosition),true);
+            lastDetectedPosition = gridPosition;    
+        }
+        
+    }
+
+    private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
+    {
+        GridData selectedData = objectPool.objectsData[selectedObjectIndex].ID == 0 ? floorData: furnitureData;
+        return selectedData.CanPlaceObjectAt(gridPosition,objectPool.objectsData[selectedObjectIndex].Size);
     }
 }

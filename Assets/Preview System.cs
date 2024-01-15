@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PreviewSystem : MonoBehaviour
@@ -57,10 +53,10 @@ public class PreviewSystem : MonoBehaviour
     public void UpdatePosition(Vector3 position, bool validity){
         MovePreview(position);
         MoveCursor(position);
-        ApplyFeedbacl(validity);
+        ApplyFeedback(validity);
     }
 
-    private void ApplyFeedbacl(bool validity)
+    private void ApplyFeedback(bool validity)
     {
         Color c = validity ? Color.white:Color.red;
         CellIndicatorRenderer.material.color = c;
