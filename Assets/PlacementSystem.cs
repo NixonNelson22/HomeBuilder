@@ -54,6 +54,7 @@ public class PlacementSystem : MonoBehaviour
         }
         GameObject newObject = Instantiate(objectPool.objectsData[SelectedObjectIndex].Prefab);
         newObject.transform.position = grid.CellToWorld(gridPosition); 
+        newObject.transform.rotation =Quaternion.AngleAxis(90f,Vector3.up);
         placedGameObject.Add(newObject);
         GridData selectedData = objectPool.objectsData[SelectedObjectIndex].ID == 0 ? floorData: furnitureData;
         selectedData.AddObjectAt(gridPosition,objectPool.objectsData[SelectedObjectIndex].Size,objectPool.objectsData[SelectedObjectIndex].ID,placedGameObject.Count -1);
