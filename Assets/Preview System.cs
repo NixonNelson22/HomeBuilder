@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PreviewSystem : MonoBehaviour
@@ -29,12 +30,14 @@ public class PreviewSystem : MonoBehaviour
     {
         if(size.x>0 || size.y>0){
             cellIndicator.transform.localScale = new Vector3(size.x,1,size.y);
+            cellIndicator.transform.rotation = Quaternion.AngleAxis(90,Vector3.up);
             CellIndicatorRenderer.material.mainTextureScale = size;    
         }
     }
 
     private void PreparePreview(GameObject previewObject)
     {
+        //replace materials in the prefab with the preview material
         Renderer[] renderers = previewObject.GetComponentsInChildren<Renderer>();
         foreach(Renderer renderer in renderers){
             Material[] materials = renderer.materials;

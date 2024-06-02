@@ -15,6 +15,11 @@ MonoBehaviour:
   objectsData:
   - <Name>k__BackingField: Shelf
     <ID>k__BackingField: 1
-    <Size>k__BackingField: {x: 1, y: 2}
+    <Size>k__BackingField: {x: 2, y: 1}
     <Prefab>k__BackingField: {fileID: 765276626140621328, guid: 930e30b6b0f7e230f85dc9590ad662c4,
+      type: 3}
+  - <Name>k__BackingField: loor
+    <ID>k__BackingField: 2
+    <Size>k__BackingField: {x: 4, y: 4}
+    <Prefab>k__BackingField: {fileID: 4194097738989652642, guid: 7fe9c0959dd56634699635b04dbe9c35,
       type: 3}

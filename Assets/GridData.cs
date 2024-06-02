@@ -45,7 +45,7 @@ public class PlacementData
     public int PlacedObjectIndex{get;private set;}
     public PlacementData(List<Vector3Int> OccupiedPositions, int id, int placedObjectIndex)
     {
-        this.occupiedPositions = occupiedPositions;
+        this.occupiedPositions = OccupiedPositions;
         ID = id;
         PlacedObjectIndex = placedObjectIndex;
     }

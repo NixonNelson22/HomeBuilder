@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlacementSystem : MonoBehaviour
@@ -22,6 +23,7 @@ public class PlacementSystem : MonoBehaviour
     private PreviewSystem preview;
 
     private Vector3Int lastDetectedPosition = Vector3Int.zero;
+    private Quaternion rotation;
     private void Start() {
         StopPlacement();
         floorData = new();
@@ -46,7 +48,7 @@ public class PlacementSystem : MonoBehaviour
             return;
         }
         Vector3 mousePosition = inputManager.getSelectedMapPosition();
-        Vector3Int gridPosition = grid.WorldToCell(mousePosition);
+        Vector3Int gridPosition = grid.WorldToCell(mousePosition); 
         bool placementValidity = CheckPlacementValidity(gridPosition,SelectedObjectIndex);
         if (placementValidity == false)
         {
@@ -54,12 +56,18 @@ public class PlacementSystem : MonoBehaviour
         }
         GameObject newObject = Instantiate(objectPool.objectsData[SelectedObjectIndex].Prefab);
         newObject.transform.position = grid.CellToWorld(gridPosition); 
-        newObject.transform.rotation =Quaternion.AngleAxis(90f,Vector3.up);
+        newObject.transform.rotation = rotation;
         placedGameObject.Add(newObject);
         GridData selectedData = objectPool.objectsData[SelectedObjectIndex].ID == 0 ? floorData: furnitureData;
-        selectedData.AddObjectAt(gridPosition,objectPool.objectsData[SelectedObjectIndex].Size,objectPool.objectsData[SelectedObjectIndex].ID,placedGameObject.Count -1);
+        selectedData.AddObjectAt(gridPosition,objectPool.objectsData[SelectedObjectIndex].Size, objectPool.objectsData[SelectedObjectIndex].ID,placedGameObject.Count -1);
     }
-
+    public void RotateObject(){
+        float deg;
+        deg = 90f;
+        deg +=deg;
+        rotation = Quaternion.AngleAxis(deg,Vector3.up);
+    }
+    //
     public void StopPlacement(){
         SelectedObjectIndex = -1;
         gridVisualization.SetActive(false);
